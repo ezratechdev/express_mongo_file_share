@@ -20,6 +20,15 @@ const { log } = console;
 const app = express();
 const Server = http.createServer(app);
 const PORT = process.env.PORT || 4600;
+const io = require('socket.io')(Server);
+
+
+// socket events
+
+io.on('connection' , (socket:any) =>{
+    console.log('Connection made');
+    socket.on('data' , (data:any) => console.log(data));
+});
 
 // middlewares
 app.use(helmet({

@@ -1,5 +1,12 @@
+'use strict';
 // get form  
 const file_sender = document.getElementById('file_sender');
+
+// sockets
+const socket = io();
+
+socket.emit('data' , 'from front end');
+
 
 file_sender?.addEventListener('submit' , async event =>{
     event.preventDefault();

@@ -1,0 +1,55 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    background-color: #32533D;
+    position: relative;
+    min-height: 100vw;
+    min-height: 100vh;
+}
+.data{
+    flex: 1;
+}
+.file-box{
+    position: absolute;
+    bottom: 10px;
+    left: 23%;
+    margin: 0.3rem auto;
+    background-color: #3BB273;
+    padding: 1rem;
+    width: 50%;
+    border-radius: 0.6rem;
+}
+.file-box form{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.file-box form input[type='text']{
+    width: 80%;
+}
+.file-box form input{
+    border: none;
+    outline: none;
+    background: none;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #fff;
+    box-shadow:  20px 20px 60px #349d65,
+    -20px -20px 60px #42c781
+}
+.file-box form input::placeholder{
+    color: #fff;
+}
+
+@media screen and (max-width:720px) {
+    .file-box{
+        left: 10px;
+        width: 90%;
+    }
+}

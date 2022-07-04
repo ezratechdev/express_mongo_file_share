@@ -100,7 +100,7 @@ auth.post('/signup' , [ no_req_body , no_details , get_user , jwt_key ] , eah( a
     }
 
     res.status(200)
-    .cookie('auth' , `${create_token(create_user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true , secure:true})
+    .cookie('auth' , `${create_token(create_user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true , secure:true , maxAge: 1000 * 60 * 24 * 30 })
     .json({
         ...ResponseFunction({
             message:`User with email ${req.email} has been created`,
@@ -111,7 +111,7 @@ auth.post('/signup' , [ no_req_body , no_details , get_user , jwt_key ] , eah( a
 
 // login
 
-auth.post('/login' , [ no_req_body , no_details , get_user ] , eah(async (req:any , res:any) =>{
+auth.post('/login' , [ no_req_body , no_details , get_user , jwt_key ] , eah(async (req:any , res:any) =>{
     if(!req.user){
         res.status(404)
         .json({
@@ -134,12 +134,12 @@ auth.post('/login' , [ no_req_body , no_details , get_user ] , eah(async (req:an
         return;
     }
     res.status(200)
-    .cookie('auth' , `${create_token(req.user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true , secure:true})
+    .cookie('auth' , `${create_token(req.user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true , secure:true , maxAge: 1000 * 60 * 24 * 30 })
     .json({
         ...ResponseFunction({
             message:`User with email ${req.email} has been logged in`,
             status:200,
         }),
-    })
-    // 
+    });
+    
 }));

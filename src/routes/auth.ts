@@ -100,7 +100,7 @@ auth.post('/signup' , [ no_req_body , no_details , get_user , jwt_key ] , eah( a
     }
 
     res.status(200)
-    .cookie('auth' , `${create_token(create_user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true})
+    .cookie('auth' , `${create_token(create_user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true , secure:true})
     .json({
         ...ResponseFunction({
             message:`User with email ${req.email} has been created`,
@@ -123,7 +123,7 @@ auth.post('/login' , [ no_req_body , no_details , get_user ] , eah(async (req:an
         return;
     }
 
-    if(!(req.user && await bcrypt.compare(req.user.password , req.password))){
+    if(!(req.user && await bcrypt.compare(req.password , req.user.password))){
         res.status(401)
         .json({
             ...ResponseFunction({
@@ -134,7 +134,7 @@ auth.post('/login' , [ no_req_body , no_details , get_user ] , eah(async (req:an
         return;
     }
     res.status(200)
-    .cookie('auth' , `${create_token(req.user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true})
+    .cookie('auth' , `${create_token(req.user._id ,`auth` , `${req.jwtkey}`)}` , { signed: true , sameSite: true , httpOnly : true , secure:true})
     .json({
         ...ResponseFunction({
             message:`User with email ${req.email} has been logged in`,

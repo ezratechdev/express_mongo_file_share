@@ -1,0 +1,42 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding:0;
+}
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-width: 100vw;
+    background-color: #C29979;
+}
+.error{
+    width: 100%;
+}
+.error p{
+    padding: 1rem;
+    width: 40%;
+    margin: 0.2rem auto;
+    border-radius: 0.3rem;
+    background-color: #3BB273;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #fff;
+}
+.error .home{
+    border: 1px solid #3BB273;
+    color: #fff;
+    background-color: #C29979;
+}
+
+.error .home:hover{
+    background-color: #3BB273;
+    color: #fff 
+}
+@media screen and (max-width:720px) {
+    .error p{
+        width: 90%;
+    }
+}

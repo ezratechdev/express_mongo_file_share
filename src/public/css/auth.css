@@ -1,0 +1,92 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html {
+    scroll-behavior: smooth;
+}
+
+body{
+    display: flex;
+    flex-direction: row;
+}
+
+.left , .right{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    min-height: 100vh;
+    position: relative;
+}
+.left{
+    background-color: #C29979;
+    flex-direction: column;
+}
+.right{
+    background-color: #573D1C ;
+}
+.left form , .right form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.left form input , .right form input{
+    width: 60%;
+    padding: 1rem;
+    outline: none;
+    border: none;
+    margin: 0.1rem auto;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color:#767676 ;
+}
+.left form input::placeholder , .right form input::placeholder{
+    color: #767676;
+}
+
+.left form input[type='submit'] , .right form input[type='submit']{
+    background-color: #3BB273;
+    color: #fff;
+}
+
+/* for wider screens hide log guide */
+.log_guide{
+    display: none;
+}
+
+@media screen and (max-width:720px) {
+    body{
+        flex-direction: column;
+    }
+    .left , .right{
+        width: 100%;
+    }
+    .left form input , .right form input{
+        width: 90%;
+    }
+    .log_guide{
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .log_guide p{
+        width: 90%;
+        padding: 1rem;
+        background-color: #32533D;
+        margin: 0.2rem auto;
+        border-radius: 0.3rem;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1rem;
+        color: #fff;
+    }
+}

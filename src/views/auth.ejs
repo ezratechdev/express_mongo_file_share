@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/auth.css">
+    <title>Authenication</title>
+</head>
+<body>
+    <div class="left">
+        <form>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <input type="submit" value="Sign Up">
+        </form>
+        <div class="log_guide">
+            <p>Already a user?</p>
+            <p id="login_tap">Tap Me To Login</p>
+        </div>
+    </div>
+    <div class="right">
+        <form>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="submit" value="Log In">
+        </form>
+        <div class="log_guide">
+            <p>New User ?</p>
+            <p id="signup_tap">Tap Me To Sign Up</p>
+        </div>
+    </div>
+    <script src="./js/auth.js"></script>
+</body>
+</html>

@@ -8,6 +8,9 @@ import { auth } from "./routes/auth";
 import cookieParser from 'cookie-parser';
 import path from "path";
 import jwt from "jsonwebtoken";
+import { file_router } from "./routes/files";
+import { jwt_key } from "./global/middlewares/jwt_key";
+import { check_auth } from "./global/middlewares/check_auth";
 require('dotenv').config({ path : path.join(`${__dirname}/.env`)});
 
 // @features
@@ -35,63 +38,25 @@ app.use(helmet({
     crossOriginResourcePolicy:true,
 }));
 app.use(hpp());
-app.use(express.json({ limit : '10kb'}));
-app.use(express.urlencoded( { extended : true , limit : '10kb'}));
+app.use(express.json(/*{ limit : '10kb'}*/));
+app.use(express.urlencoded( { extended : true , /*limit : '10kb'*/}));
 app.use(cookieParser("secret_cookie_key"));
 // static files
 app.use(express.static(path.join(`${__dirname}/public`)));
-
+app.use( express.static(`${__dirname}/uploads`))
 // view engine
+// ejs
 app.set('view engine' , 'ejs');
 app.set('views' , `${__dirname}/views`);
 
 
 
 //  routes 
-
-// auth middlewares
-const jwt_key = (req:any , _:any , next:any) =>{
-    req.jwtkey = `very_secret_jwt_key`;
-    next();
-}
-function isTokenExpired(token:string) {
-    const payloadBase64 = token.split('.')[1];
-    const decodedJson = Buffer.from(payloadBase64, 'base64').toString();
-    const decoded = JSON.parse(decodedJson)
-    const exp = decoded.exp;
-    const expired = (Date.now() >= exp * 1000)
-    return expired
-}
-
-// jwt checker
-const verify_token = (token:string , secKey:string) =>{
-    try{
-        if(!(token && secKey)) throw new Error(`${(token) ? undefined : "token not passed"}`)
-        if(isTokenExpired(token)) throw new Error(`Token has expired`);
-        else return jwt.verify(token , `${secKey}`);
-    } catch(error){
-        console.log(error);
-        throw new Error(`Faced an error while authenicating.Contact suppport`);
-    }
-}
-
-
-const check_auth = (req:any , res:any , next:NextFunction) =>{
-    if(!req.signedCookies['auth']){
-        res.status(401)
-        .render('auth');
-    }else{
-        // get token and check token
-        req.token_data = verify_token(req.signedCookies.auth ,req.jwtkey);
-        next();
-    }
-};
-
-// ejs
 app.get('/' , [ jwt_key , check_auth ,  ], (_:any, res:any) =>{ res.render('index')});
 // check if user is already logged in if so show modal
 // apis
 app.use('/authenication' , auth);
+app.use('/files' , file_router);
 
 
 // error 404

@@ -10,7 +10,7 @@ const user_schema = new Schema({
         type:String,
         required:[true , 'User password was not passed'],
     },
-});
+} , { timestamps: true});
 
 
 export const user_model = model('User' , user_schema);

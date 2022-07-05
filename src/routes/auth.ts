@@ -4,6 +4,8 @@ import ResponseFunction from "../global/utils/ResponseFunction";
 import { user_model } from "../schema/user";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { jwt_key } from "../global/middlewares/jwt_key";
+import { create_token } from "../global/middlewares/jwt";
 
 
 export const auth = Router();
@@ -55,15 +57,7 @@ const get_user = async ( req:any , _:any, next:NextFunction ) =>{
     }
 };
 
-// universal auth key
-const jwt_key = (req:any , _:any , next:any) =>{
-    req.jwtkey = `very_secret_jwt_key`;
-    next();
-}
 
-const create_token = ( id : string , operation:string , secKey:string) =>{
-    return jwt.sign({ id , operation } , `${secKey}` , { expiresIn : '30d'});
-}
 
 
 // signup

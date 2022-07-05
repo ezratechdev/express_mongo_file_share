@@ -47,9 +47,35 @@ body{
     color: #fff;
 }
 
+/* data */
+.data{
+    list-style: none;
+    width: 100%;
+    overflow-y: scroll;
+}
+.data li{
+    padding: 1rem;
+    background-color: #C29979;
+    width: 40%;
+    margin: 0.3rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border-radius: 0.3rem;
+}
+.options button{
+    border: none;
+    outline: none;
+    font-weight: bold;
+    font-size: 0.7rem;
+}
+
 @media screen and (max-width:720px) {
     .file-box{
         left: 10px;
         width: 90%;
+    }
+    .data li{
+        width: 80%;
     }
 }

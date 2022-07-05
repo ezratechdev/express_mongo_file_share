@@ -6,12 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A simple and convinient way to share file between your devices over the internet" >
     <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./fi/css/font-awesome.min.css">
     <script defer src="/socket.io/socket.io.js"></script>
     <script defer src="./js/index.js"></script>
     <title>Lite Share</title>
 </head>
 <body>
-    <div class="data"></div>
+    <ul class="data">
+        <li>
+            <div class="type">
+                <i class="fa-solid fa-image"></i>
+            </div>
+            <div class="name">name</div>
+            <div class="options">
+                <button>Download</button>
+                <button>Hide</button>
+                <button>Delete</button>
+            </div>
+        </li>
+        <li>
+            <div class="type">
+                <i class="fa-solid fa-image"></i>
+            </div>
+            <div class="name">name</div>
+            <div class="options">
+                <button>Download</button>
+                <button>Hide</button>
+                <button>Delete</button>
+            </div>
+        </li>
+    </ul>
     <div class="file-box">
         <form id="file_sender" method="POST">
             <input type="file" name="file" placeholder="File">

@@ -10,6 +10,7 @@ import { jwt_key } from "../global/middlewares/jwt_key";
 import mongoose from "mongoose";
 import shortid from "shortid";
 import { check_auth } from "../global/middlewares/check_auth";
+import { resolveSoa } from "dns";
 
 // files share
 // share without login -- no pass , unlocked files
@@ -317,6 +318,85 @@ file_router.patch('/unlock/:id' , [ jwt_key , check_user] , eah (async ( req:any
             ...ResponseFunction({
                 message:`File has been made private`,
                 status:200,
+            })
+        })
+    }
+}));
+
+// delete file
+file_router.delete('/:id' , [ jwt_key , check_user ] , eah ( async ( req:any , res) =>{
+    if(!req.params.id){
+        res.status(404)
+        .json({
+            ...ResponseFunction({
+                message:`File id was not passed`,
+                status:404,
+            }),
+        });
+        return;
+    }
+
+    const { id } = req.params;
+
+    const get_file = await file_model.findOne({ short_id : id.trim()});
+    if(!get_file){
+        res.status(404)
+        .json({
+            ...ResponseFunction({
+                status:404,
+                message:`File was not found`,
+            }),
+        });
+        return;
+    }
+    if(!((get_file.owner && req.user) && (get_file.owner.toString() == req.user._id))){
+        // user cannot delete this file
+        res.status(401)
+        .json({
+            ...ResponseFunction({
+                status:401,
+                message:`You cannot delete this file as you are not authorized or it is a public file.\nIf you wish to have it deleted and you uploaded the file as a public file kindly contact project manager`,
+            }),
+        });
+        return;
+    }
+    // delete file from file system
+    try{
+        if(fs.existsSync(get_file.path)){
+            fs.unlinkSync(get_file.path);
+            const deleted_file = await file_model.findByIdAndDelete(get_file._id);
+            if(!deleted_file){
+                res.status(500)
+                .json({
+                    ...ResponseFunction({
+                        status:500,
+                        message:`File has been deleted but not fully.`
+                    }),
+                });
+                return;
+            }
+            res.status(200)
+            .json({
+                ...ResponseFunction({
+                    status:200,
+                    message:`File has been deleted successfully`,
+                })
+            })
+        }else{
+            res.status(404)
+            .json({
+                ...ResponseFunction({
+                    status:404,
+                    message:`File not found.Has file been deleted?`,
+                })
+            })
+        }
+    } catch(error){
+        res.status(500)
+        .json({
+            ...ResponseFunction({
+                message:`Unable to delete file.Try again later`,
+                status:500,
             })
         })
     }

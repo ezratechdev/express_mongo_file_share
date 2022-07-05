@@ -9,6 +9,7 @@ import { check_user } from "../global/middlewares/check_user";
 import { jwt_key } from "../global/middlewares/jwt_key";
 import mongoose from "mongoose";
 import shortid from "shortid";
+import { check_auth } from "../global/middlewares/check_auth";
 
 // files share
 // share without login -- no pass , unlocked files
@@ -53,7 +54,64 @@ const upload = multer({
 export const file_router = Router();
 
 // download file
-file_router.get('/:id' , () =>{});
+file_router.get('/' , [jwt_key , check_auth] , eah (async ( req:any , res:any) =>{
+    if(!req.user){
+        res
+        .status(404)
+        .json({
+            ...ResponseFunction({
+                status:200,
+                message:`User was not found`,
+            }),
+        });
+        return;
+    }
+    // 
+    const get_user_files = await file_model.find({ owner : req.user._id}).select('-owner');
+    if(get_user_files.length == 0){
+        res
+        .status(200)
+        .json({
+            ...ResponseFunction({
+                status:200,
+                message:`User files fetched`,
+            }),
+            files:[],
+        });
+        return;
+    }
+    res
+        .status(200)
+        .json({
+            ...ResponseFunction({
+                status:200,
+                message:`User files fetched`,
+            }),
+            files:get_user_files,
+        });
+}));
+file_router.get('/download/:id' , eah( async ( req:any , res:any) =>{
+    const { id }:any = req.params;
+    // this is the short id
+    const get_file = await file_model.findOne({ short_id : id.trim() })
+
+    if(!get_file){
+        res
+        .status(404)
+        .json({
+            ...ResponseFunction({
+                message:`File was not found`,
+                status:404
+            }),
+        });
+        return;
+    }
+
+    get_file.download++;
+    await get_file.save();
+    console.log(get_file.download);
+    res.download( get_file.path , get_file.name);
+}));
 
 // post file
 

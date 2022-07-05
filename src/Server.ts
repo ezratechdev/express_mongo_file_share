@@ -1,4 +1,4 @@
-import express, { NextFunction } from "express";
+import express from "express";
 import helmet from "helmet";
 import ejs from "ejs";
 import mongoose from "mongoose";
@@ -7,7 +7,7 @@ import hpp from "hpp";
 import { auth } from "./routes/auth";
 import cookieParser from 'cookie-parser';
 import path from "path";
-import jwt from "jsonwebtoken";
+import cors from 'cors';
 import { file_router } from "./routes/files";
 import { jwt_key } from "./global/middlewares/jwt_key";
 import { check_auth } from "./global/middlewares/check_auth";
@@ -37,6 +37,15 @@ io.on('connection' , (socket:any) =>{
 app.use(helmet({
     crossOriginResourcePolicy:true,
 }));
+// app.use(cors({
+//     origin:( origin , cb ) =>{
+//         if(origin){
+//             cb(null , true);
+//         }else{
+//             cb( new Error(`Access blocked by cors`));
+//         }
+//     }
+// }))
 app.use(hpp());
 app.use(express.json(/*{ limit : '10kb'}*/));
 app.use(express.urlencoded( { extended : true , /*limit : '10kb'*/}));

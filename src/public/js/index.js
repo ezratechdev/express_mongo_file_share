@@ -39,3 +39,24 @@ file_sender?.addEventListener('submit' , async event =>{
     });
     event.target?.reset();
 });
+
+// get user files 
+const get_files = async () =>{
+    await fetch(`/files/`,
+    {
+        method:'GET',
+        headers: new Headers({
+            'Content-Type':'application/json',
+        }),
+        credentials:'same-origin',
+    })
+    .then(data => data.json())
+    .then(result =>{
+        console.log(result);
+    })
+    .catch(error =>{
+        console.log(error);
+    });
+}
+
+get_files();

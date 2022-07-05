@@ -18,6 +18,10 @@ const file_schema = new mongoose.Schema({
         type:String,
         required:[true , 'Short id of file was not passed'],
     },
+    download:{
+        type:Number,
+        default:0,
+    }
 } , { timestamps : true });
 
 

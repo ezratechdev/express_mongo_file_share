@@ -90,7 +90,17 @@ file_router.get('/' , [jwt_key , check_auth] , eah (async ( req:any , res:any) =
             files:get_user_files,
         });
 }));
-file_router.get('/download/:id' , eah( async ( req:any , res:any) =>{
+file_router.get('/download/:id' , [ jwt_key , check_user] , eah( async ( req:any , res:any) =>{
+    if(!req.params.id){
+        res.status(404)
+        .json({
+            ...ResponseFunction({
+                status:404,
+                message:`File id was not passed`,
+            }),
+        });
+        return;
+    }
     const { id }:any = req.params;
     // this is the short id
     const get_file = await file_model.findOne({ short_id : id.trim() })
@@ -107,10 +117,25 @@ file_router.get('/download/:id' , eah( async ( req:any , res:any) =>{
         return;
     }
 
-    get_file.download++;
-    await get_file.save();
-    console.log(get_file.download);
-    res.download( get_file.path , get_file.name);
+    // check if file has an owner
+    if (((get_file.owner && req.user) && (get_file.owner.toString() == req.user._id))) {
+        get_file.download++;
+        await get_file.save();
+        res.download(get_file.path, get_file.name);
+    } else if(!get_file.locked){
+        get_file.download++;
+        await get_file.save();
+        res.download(get_file.path, get_file.name);
+    }else{
+        res
+        .status(401)
+        .json({
+            ...ResponseFunction({
+                message:`File is locked.Unable to download`,
+                status:404,
+            }),
+        });
+    }
 }));
 
 // post file
@@ -133,7 +158,7 @@ file_router.post('/' , [ upload.single('file') , jwt_key , check_user] , eah ( a
         path:req.file.path,
         owner:req.user ? new mongoose.Types.ObjectId(req.user._id) : undefined,
         short_id,
-
+        locked: req.user ? true : false ,
     });
     if(!save_file){
         res.status(500)
@@ -156,3 +181,143 @@ file_router.post('/' , [ upload.single('file') , jwt_key , check_user] , eah ( a
 
 
 
+// unlock file 
+// make private file public
+
+file_router.patch('/unlock/:id' , [ jwt_key , check_user] , eah (async ( req:any , res) =>{
+    if(!req.params.id){
+        res.status(404)
+        .json({
+            ...ResponseFunction({
+                status:404,
+                message:`File id was not passed`,
+            }),
+        });
+        return;
+    }
+    const { id } = req.params;
+    if(!req.user){
+        res
+        .status(401)
+        .json({
+            ...ResponseFunction({
+                message:`You are not logged in thus cannot unlock this file`,
+                status:401,
+            }),
+        });
+        return;
+    }
+    // get file and see if it is public
+    const get_file = await file_model.findOne({ short_id : id });
+    if(!get_file){
+        res.status(404)
+        .json({
+            ...ResponseFunction({
+                status:404,
+                message:`File was not found`,
+            }),
+        });
+        return;
+    }
+
+    if(!get_file.locked){
+        res.status(200)
+        .json({
+            ...ResponseFunction({
+                status:200,
+                message:`This file is already public`,
+            }),
+        });
+        return;
+    }
+
+    if(!(get_file.owner?.toString() == req.user._id)){
+        res.status(401)
+        .json({
+            ...ResponseFunction({
+                status:401,
+                message:`You are not permitted to unlock this file`,
+            }),
+        });
+    }else{
+        get_file.locked = false,
+        await get_file.save();
+        res.status(200)
+        .json({
+            ...ResponseFunction({
+                message:`File has been made public`,
+                status:200,
+            })
+        })
+    }
+}));
+
+
+// making files private
+file_router.patch('/unlock/:id' , [ jwt_key , check_user] , eah (async ( req:any , res) =>{
+    if(!req.params.id){
+        res.status(404)
+        .json({
+            ...ResponseFunction({
+                status:404,
+                message:`File id was not passed`,
+            }),
+        });
+        return;
+    }
+    const { id } = req.params;
+    if(!req.user){
+        res
+        .status(401)
+        .json({
+            ...ResponseFunction({
+                message:`You are not logged in thus cannot unlock this file`,
+                status:401,
+            }),
+        });
+        return;
+    }
+    // get file and see if it is public
+    const get_file = await file_model.findOne({ short_id : id });
+    if(!get_file){
+        res.status(404)
+        .json({
+            ...ResponseFunction({
+                status:404,
+                message:`File was not found`,
+            }),
+        });
+        return;
+    }
+
+    if(get_file.locked){
+        res.status(200)
+        .json({
+            ...ResponseFunction({
+                status:200,
+                message:`This file is already locked`,
+            }),
+        });
+        return;
+    }
+
+    if(!(get_file.owner?.toString() == req.user._id)){
+        res.status(401)
+        .json({
+            ...ResponseFunction({
+                status:401,
+                message:`You are not permitted to lock this file`,
+            }),
+        });
+    }else{
+        get_file.locked = true,
+        await get_file.save();
+        res.status(200)
+        .json({
+            ...ResponseFunction({
+                message:`File has been made private`,
+                status:200,
+            })
+        })
+    }
+}));

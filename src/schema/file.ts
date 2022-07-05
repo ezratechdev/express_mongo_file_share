@@ -21,6 +21,10 @@ const file_schema = new mongoose.Schema({
     download:{
         type:Number,
         default:0,
+    },
+    locked:{
+        type:Boolean,
+        default:true,
     }
 } , { timestamps : true });
 

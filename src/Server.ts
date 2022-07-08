@@ -29,7 +29,9 @@ const io = require('socket.io')(Server);
 // socket events
 
 io.on('connection' , (socket:any) =>{
-    console.log('Connection made');
+    const cookie = socket.handshake.headers.cookie;
+    const data = cookieParser.signedCookie(cookie, `secret_cookie_key`);
+    console.log('Connection made' , cookie , `\n namer ${JSON.stringify(data)} \ndata`);
     socket.on('data' , (data:any) => console.log(data));
 });
 

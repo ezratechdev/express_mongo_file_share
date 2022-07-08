@@ -63,7 +63,7 @@ body{
     align-items: flex-end;
     border-radius: 0.3rem;
 }
-.options button{
+.options_btn{
     border: none;
     outline: none;
     font-weight: bold;

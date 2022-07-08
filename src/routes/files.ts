@@ -10,7 +10,6 @@ import { jwt_key } from "../global/middlewares/jwt_key";
 import mongoose from "mongoose";
 import shortid from "shortid";
 import { check_auth } from "../global/middlewares/check_auth";
-import { resolveSoa } from "dns";
 
 // files share
 // share without login -- no pass , unlocked files
@@ -68,7 +67,7 @@ file_router.get('/' , [jwt_key , check_auth] , eah (async ( req:any , res:any) =
         return;
     }
     // 
-    const get_user_files = await file_model.find({ owner : req.user._id}).select('-owner');
+    const get_user_files = await file_model.find({ owner : req.user._id}).select('-owner -path -_id');
     if(get_user_files.length == 0){
         res
         .status(200)
@@ -92,6 +91,7 @@ file_router.get('/' , [jwt_key , check_auth] , eah (async ( req:any , res:any) =
         });
 }));
 file_router.get('/download/:id' , [ jwt_key , check_user] , eah( async ( req:any , res:any) =>{
+    // id is the short id of a file
     if(!req.params.id){
         res.status(404)
         .json({
@@ -255,7 +255,7 @@ file_router.patch('/unlock/:id' , [ jwt_key , check_user] , eah (async ( req:any
 
 
 // making files private
-file_router.patch('/unlock/:id' , [ jwt_key , check_user] , eah (async ( req:any , res) =>{
+file_router.patch('/lock/:id' , [ jwt_key , check_user] , eah (async ( req:any , res) =>{
     if(!req.params.id){
         res.status(404)
         .json({

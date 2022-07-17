@@ -1,24 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A simple and convinient way to share file between your devices over the internet" >
-    <link rel="stylesheet" href="./css/index.css">
-    <link rel="stylesheet" href="./fi/css/font-awesome.min.css">
-    <script defer src="/socket.io/socket.io.js"></script>
-    <script defer src="./js/index.js"></script>
-    <title>Lite Share</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple and convinient way to share file between your devices over the internet">
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./fi/css/font-awesome.min.css">
+  <script defer src="/socket.io/socket.io.js"></script>
+  <script defer src="./js/index.js"></script>
+  <title>Lite Share</title>
 </head>
+
 <body>
+  <div class="container">
     <ul class="data" id="files_body"></ul>
     <div class="file-box">
-        <form id="file_sender" method="POST">
-            <input type="file" name="file" placeholder="File">
-            <!-- <input type="text" name="text" placeholder="Enter Text"> -->
-            <input type="submit" value="Send">
-        </form>
+      <form id="file_sender" method="POST">
+        <input type="file" name="file" placeholder="File">
+        <!-- <input type="text" name="text" placeholder="Enter Text"> -->
+        <input type="submit" value="Send">
+      </form>
     </div>
+
+    <div class="div">
+      <button class="open-modal">Modal</button>
+    </div>
+
+    <div class="modal">
+      <span class="modal-backdrop close-modal"></span>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Modal Title</h2>
+          <button class="close-modal">&times</button>
+        </div>
+        <div class="modal-body">
+        <h3>Modal body</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate quos neque placeat totam, debitis error
+          sunt saepe quia, mollitia ab nam doloremque. Expedita assumenda provident, dolore doloribus molestias
+          reprehenderit aliquam?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="close-modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+
+</html>
+</body>
+<script>
+  const openModalButtons = document.querySelectorAll('.open-modal'),
+    modal = document.querySelector('.modal'),
+    closeModalButtons = document.querySelectorAll('.close-modal');
+
+  openModalButtons.forEach(openBtn => {
+    openBtn.addEventListener('click', openModal)
+  });
+
+  closeModalButtons.forEach(closeBtn => {
+    closeBtn.addEventListener('click', closeModal)
+  });
+
+  function openModal() {
+    modal.classList.add('visible');
+  }
+
+  function closeModal() {
+    modal.classList.remove('visible');
+  }
+</script>
+
 </html>
